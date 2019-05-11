@@ -14,8 +14,8 @@ public:// functions
 
 	void SetPosition(float x, float y);
 
-	static void Seek( CVector2D &StartVector,CVector2D &OtherPoint);
-	static void flee(CVector2D &StartVector, CVector2D &OtherPoint);
+	static void Seek(CVector2D &StartVector, CVector2D &OtherPoint);
+	static void flee(CVector2D &StartVector, CVector2D &OtherPoint, float RangeOfDanger);
 public:// variables 
 	CVector2D m_position;
 	CVector2D m_direction;
