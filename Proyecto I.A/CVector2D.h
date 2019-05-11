@@ -56,10 +56,10 @@ public:// functions
 
 	void operator=(const CVector2D &OtherVector);
 
+	float Y;
 private://variables 
 
 	float X;
-	float Y;
 
 };
 
