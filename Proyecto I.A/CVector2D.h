@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>//!<- for calculating magnitude 
+#include <iostream>
 class CVector2D
 {
 public:// constructors 
@@ -28,8 +29,12 @@ public:// functions
 
 	float InvserSqaredRoot();
 
-	float GetX();
-	float GetY();
+	float Angle();
+
+	float AngleBetweenTwoVectors(CVector2D &OtherVector);
+
+	float GetX() const;
+	float GetY() const;
 
 	void SetX(float value);
 	void SetY(float value);
@@ -39,8 +44,17 @@ public:// functions
 	CVector2D	operator-(const CVector2D &OtherVector);
 	// the same as DotProduct
 	float operator*(const CVector2D &OtherVector);
-	// the same as Multiplying by a scalar
+
+	/* alters the vector */
+	CVector2D operator+= (const CVector2D &OtherVector);
+	/*!Return the Current ofter operation vector */
+	CVector2D operator-= (const CVector2D &OtherVector);
+	/*!alters this vector and returns the result of multiplaction */
+	CVector2D operator*= (const CVector2D &OtherVector);
+	//!return a new vector 
 	CVector2D operator*(const float &Scalar);
+
+	void operator=(const CVector2D &OtherVector);
 
 private://variables 
 

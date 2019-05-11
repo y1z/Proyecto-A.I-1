@@ -71,12 +71,12 @@ float CVector2D::InvserSqaredRoot()
 	return 1 / SquaredMagnitude();
 }
 
-float CVector2D::GetX()
+float CVector2D::GetX() const
 {
 	return this->X;
 }
 
-float CVector2D::GetY()
+float CVector2D::GetY() const
 {
 	return this->Y;
 }
@@ -84,6 +84,20 @@ float CVector2D::GetY()
 void CVector2D::SetX(float value)
 {
 	this->Y = value;
+}
+
+float CVector2D::Angle()
+{
+	return std::atan2(Y, X);
+}
+
+float CVector2D::AngleBetweenTwoVectors(CVector2D & OtherVector)
+{
+	float Product = this->DotProduct(OtherVector);
+	float ThisVectorsMagnitude = this->Magnitude();
+	float OtherVectorMagnitude = OtherVector.Magnitude();
+
+	return acos(Product/(ThisVectorsMagnitude * OtherVectorMagnitude));
 }
 
 void CVector2D::SetY(float value)
@@ -110,4 +124,35 @@ float CVector2D::operator*(const CVector2D & OtherVector)
 CVector2D CVector2D::operator*(const float & Scalar)
 {
 	return CVector2D((this->X * Scalar) ,(this->Y * Scalar));
+}
+
+void CVector2D::operator=(const CVector2D & OtherVector)
+{
+	this->X = OtherVector.X;
+	this->Y = OtherVector.Y;
+}
+
+
+CVector2D CVector2D::operator+=(const CVector2D & OtherVector)
+{
+	this->X = this->X+ OtherVector.X;
+	this->Y = this->Y+ OtherVector.Y;
+
+	return *this;
+}
+
+CVector2D CVector2D::operator-=(const CVector2D & OtherVector)
+{
+	this->X = this->X - OtherVector.X;
+	this->Y = this->Y - OtherVector.Y;
+	
+	return *this;
+}
+
+CVector2D CVector2D::operator*=(const CVector2D & OtherVector)
+{
+	this->X = this->X * OtherVector.X;
+	this->Y = this->Y * OtherVector.Y;
+
+	return *this;
 }
