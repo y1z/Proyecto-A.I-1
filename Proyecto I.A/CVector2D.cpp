@@ -32,7 +32,7 @@ CVector2D CVector2D::Add(CVector2D & OtherVector)
 	return CVector2D(this->X + OtherVector.X, this->Y + OtherVector.Y);
 }
 
-CVector2D CVector2D::Subtrack(CVector2D & OtherVector)
+CVector2D CVector2D::Subtract(CVector2D & OtherVector)
 {
 	return CVector2D(this->X - OtherVector.X, this->Y - OtherVector.Y);
 }
@@ -41,12 +41,12 @@ CVector2D CVector2D::Normalize()
 {
 	//get current magnitude
 	float magnitude = this->Magnitude();
-	CVector2D Result;
+	CVector2D UnitVector;
 
-	Result.SetX( this->X / magnitude);
-	Result.SetY( this->Y / magnitude);
+	UnitVector.SetX( this->X / magnitude);
+	UnitVector.SetY( this->Y / magnitude);
 
-	return Result;
+	return UnitVector;
 }
 
 CVector2D CVector2D::ScalarMultiplation(float Scalar)
@@ -83,6 +83,11 @@ float CVector2D::GetY() const
 
 void CVector2D::SetX(float value)
 {
+	this->X = value;
+}
+
+void CVector2D::SetY(float value)
+{
 	this->Y = value;
 }
 
@@ -100,10 +105,7 @@ float CVector2D::AngleBetweenTwoVectors(CVector2D & OtherVector)
 	return acos(Product/(ThisVectorsMagnitude * OtherVectorMagnitude));
 }
 
-void CVector2D::SetY(float value)
-{
-	this->X = value;
-}
+
 
 CVector2D CVector2D::operator+(const CVector2D & OtherVector)
 {
@@ -153,6 +155,14 @@ CVector2D CVector2D::operator*=(const CVector2D & OtherVector)
 {
 	this->X = this->X * OtherVector.X;
 	this->Y = this->Y * OtherVector.Y;
+
+	return *this;
+}
+
+CVector2D CVector2D::operator*=(float Scalar)
+{
+	this->X = this->X * Scalar;
+	this->Y = this->Y * Scalar;
 
 	return *this;
 }

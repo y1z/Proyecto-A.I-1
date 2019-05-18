@@ -1,6 +1,14 @@
 #pragma once
-#include <cmath>//!<- for calculating magnitude 
+#include <cmath>
+#include <valarray>
 #include <iostream>
+
+/*!
+\class CVector2D "CVector2D.h"
+\brief This class will be used for 2d vector math 
+NOTE : all operator with '=' alter the current vector example 
+*/
+
 class CVector2D
 {
 public:// constructors 
@@ -9,18 +17,18 @@ public:// constructors
 	~CVector2D();
 public:// functions
 
-	//! multiplying 2 vectors, 2D vector give a scalar.
+	//! multiplying two 2D vectors give a scalar.
 	float DotProduct(CVector2D &OtherVector);
-	// return the theoretical component Z axis 
+	//! return the theoretical component Z axis 
 	float CrossProduct(CVector2D &OtherVector);
 	
 	/*! creates a new vector */
 	CVector2D Add(CVector2D &OtherVector);
 	/*! creates a new vector and can be used the tell distance*/
-	CVector2D Subtrack(CVector2D &OtherVector);
+	CVector2D Subtract(CVector2D &OtherVector);
 	/*! crates a new vector */
 	CVector2D ScalarMultiplation(float Scalar);
-	/*! Give a normal (unit) vector */
+	/*! Returns a unit vector */
 	CVector2D Normalize();
 	/*! how long a vector is */
 	float Magnitude();
@@ -28,7 +36,7 @@ public:// functions
 	float SquaredMagnitude();
 
 	float InvserSqaredRoot();
-
+	/*! used to get the angle of the current vector */
 	float Angle();
 
 	float AngleBetweenTwoVectors(CVector2D &OtherVector);
@@ -42,23 +50,25 @@ public:// functions
 
 	CVector2D operator+(const CVector2D &OtherVector);
 	CVector2D	operator-(const CVector2D &OtherVector);
-	// the same as DotProduct
+	// !the same as DotProduct
 	float operator*(const CVector2D &OtherVector);
 
 	/* alters the vector */
 	CVector2D operator+= (const CVector2D &OtherVector);
 	/*!Return the Current ofter operation vector */
 	CVector2D operator-= (const CVector2D &OtherVector);
-	/*!alters this vector and returns the result of multiplaction */
+	/*!alters this vector and returns the result of multiplication */
 	CVector2D operator*= (const CVector2D &OtherVector);
+	/*! multiples the current vector by a scalar*/
+	CVector2D operator*= (float Scalar);
 	//!return a new vector 
 	CVector2D operator*(const float &Scalar);
 
 	void operator=(const CVector2D &OtherVector);
 
-	float Y;
 private://variables 
 
+	float Y;
 	float X;
 
 };
