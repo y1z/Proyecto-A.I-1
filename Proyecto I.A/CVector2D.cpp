@@ -134,6 +134,16 @@ void CVector2D::operator=(const CVector2D & OtherVector)
 	this->Y = OtherVector.Y;
 }
 
+bool CVector2D::operator==(const CVector2D & OtherVector)
+{
+	if (this->X > OtherVector.X || this->X < OtherVector.X)
+		return false;
+	if (this->Y > OtherVector.Y || this->Y < OtherVector.Y)
+		return false;
+
+	return true;
+}
+
 
 CVector2D CVector2D::operator+=(const CVector2D & OtherVector)
 {

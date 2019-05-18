@@ -66,6 +66,8 @@ public:// functions
 
 	void operator=(const CVector2D &OtherVector);
 
+	bool operator==(const CVector2D &OtherVector);
+
 private://variables 
 
 	float Y;

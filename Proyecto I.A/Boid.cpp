@@ -1,6 +1,7 @@
 #include "Boid.h"
 #include "HelperFunctions.h"
-
+#include <random>
+#include <ctime>// used for random function
 
 Boid::Boid()
 {
@@ -25,6 +26,17 @@ bool Boid::Init(const CVector2D & Position, const CVector2D & Direction, float s
 	return true;
 }
 
+void Boid::Upadate(sf::RenderWindow & Windows)
+{
+	m_sprite.setPosition(m_position.GetX(), m_position.GetY());
+	Windows.draw(this->m_sprite);
+}
+
+void Boid::Render(sf::RenderWindow & Windows)
+{
+	Windows.display();
+}
+
 void Boid::SetPosition(const CVector2D & Position)
 {
 	m_position = Position;
@@ -40,9 +52,17 @@ void Boid::SetSpeed(float speed)
 	m_speed = speed;
 }
 
+void Boid::SetSprite(sf::Texture & TextureForSprite, float ScaleX, float ScaleY)
+{
+	m_sprite.setTexture(TextureForSprite);
+	m_sprite.setScale(ScaleX, ScaleY);
+}
+
 float Boid::Distance(Boid & OtherBoid)
 {
-	return (this->m_position.SquaredMagnitude() - OtherBoid.m_position.SquaredMagnitude());
+	CVector2D DistanceVector = (OtherBoid.m_position - m_position);
+
+	return DistanceVector.SquaredMagnitude();
 }
 
 float Boid::Distance(CVector2D & OtherVector)
@@ -67,17 +87,22 @@ float Boid::GetSpeed()
 
 CVector2D Boid::Seek(CVector2D *StartVector, CVector2D *Speed, CVector2D *EndPoint)
 {
-
-
 	CVector2D TragetVector = (*EndPoint) - (*StartVector);
 	TragetVector = TragetVector.Normalize();
-	//TragetVector = TragetVector - (*Speed);
-
 	return TragetVector;
 }
 
 CVector2D Boid::flee(CVector2D *StartVector, CVector2D *DangerVector, float RangeOfDanger)
 {
 	return ((*StartVector) - (*DangerVector)).Normalize() * RangeOfDanger;
+}
+
+CVector2D Boid::wonder(int MinX, int MaxX, int MinY, int MaxY)
+{
+
+	int PosX = (rand() % MaxX);
+	int PosY = (rand() % MaxY);
+
+	return CVector2D(PosX, PosY);
 }
 
