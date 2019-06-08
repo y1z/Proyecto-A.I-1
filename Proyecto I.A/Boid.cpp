@@ -1,7 +1,9 @@
 #include "Boid.h"
-#include "HelperFunctions.h"
 #include <random>
+#include <algorithm>
+#include <array>
 #include <ctime>// used for random function
+#include "HelperFunctions.h"
 
 Boid::Boid()
 {
@@ -14,8 +16,7 @@ Boid::Boid()
 }
 
 Boid::~Boid()
-{
-}
+{}
 
 bool Boid::Init(const CVector2D & Position, const CVector2D & Direction, float speed)
 {
@@ -24,6 +25,11 @@ bool Boid::Init(const CVector2D & Position, const CVector2D & Direction, float s
 	m_speed = speed;
 
 	return true;
+}
+
+void Boid::Destroy()
+{
+
 }
 
 void Boid::Upadate(sf::RenderWindow & Windows)
@@ -45,6 +51,12 @@ void Boid::SetPosition(const CVector2D & Position)
 void Boid::SetDirection(const CVector2D & Direction)
 {
 	m_direction = Direction;
+}
+
+void Boid::SetVelocity(float x, float y)
+{
+	m_Velocity.SetX(x);
+	m_Velocity.SetY(y);
 }
 
 void Boid::SetSpeed(float speed)
@@ -70,7 +82,7 @@ float Boid::Distance(CVector2D & OtherVector)
 	return (OtherVector - this->m_position).SquaredMagnitude();
 }
 
-CVector2D Boid::GetPosition() //const
+CVector2D Boid::GetPosition() const
 {
 	return m_position;
 }
@@ -80,29 +92,64 @@ CVector2D Boid::GetDirection() const
 	return m_direction;
 }
 
-float Boid::GetSpeed()
+CVector2D Boid::GetVelocity() const
+{
+	return m_Velocity;
+}
+
+CVector2D Boid::GetDirection()
+{
+	CVector2D OtherVector = m_Velocity.Normalize();
+	return m_Velocity.Normalize();
+}
+
+float Boid::GetSpeed() const
 {
 	return m_speed;
 }
 
-CVector2D Boid::Seek(CVector2D *StartVector, CVector2D *Speed, CVector2D *EndPoint)
+CVector2D Boid::Seek(const Boid &Seeker, const CVector2D& EndPoint)
 {
-	CVector2D TragetVector = (*EndPoint) - (*StartVector);
-	TragetVector = TragetVector.Normalize();
-	return TragetVector;
+	CVector2D TragetVector = (EndPoint - Seeker.GetPosition());
+	CVector2D SteeringVector = (TragetVector - Seeker.m_Velocity).Normalize() * Seeker.m_Mas;
+
+	return SteeringVector;
 }
 
-CVector2D Boid::flee(CVector2D *StartVector, CVector2D *DangerVector, float RangeOfDanger)
+CVector2D Boid::flee(const Boid &Fleer, const CVector2D& DangerCenter, float Radius)
 {
-	return ((*StartVector) - (*DangerVector)).Normalize() * RangeOfDanger;
+	//	CVector2D FleeVector = Seek(Fleer, DangerCenter) * -1;
+		//! to check if the boid is in range of Radius 
+	CVector2D RadiusVector(DangerCenter + CVector2D(0, Radius));
+
+	if ((Fleer.GetPosition() - RadiusVector).SquaredMagnitude() > Radius * Radius)
+	{
+
+	}
+
+	// basically don't move  
+	return Fleer.GetPosition();
 }
 
-CVector2D Boid::wonder(int MinX, int MaxX, int MinY, int MaxY)
+CVector2D Boid::wander(const Boid &Seeker, float WonderAngle)
 {
+	CVector2D CirclePosition = Seeker.GetPosition() + (Seeker.GetVelocity()).Normalize() * 10.0f;
 
-	int PosX = (rand() % MaxX);
-	int PosY = (rand() % MaxY);
+	static std::default_random_engine RandEngine;
 
-	return CVector2D(PosX, PosY);
+	float AngleX = std::cos(CirclePosition.GetX());
+	float AngleY = std::sin(CirclePosition.GetY());
+	AngleX += RandEngine() % static_cast<int>(WonderAngle);
+	AngleY -= RandEngine() % static_cast<int>(WonderAngle);
+	CVector2D WanderForce = CirclePosition + (CVector2D(AngleX, AngleY));
+
+	return 	WanderForce.Normalize() * 10;
+}
+
+CVector2D Boid::Arrive(const Boid & Seeker, const Boid & Target)
+{
+	CVector2D TargetVector = (Target.m_position - Seeker.m_position);
+
+	return TargetVector;
 }
 

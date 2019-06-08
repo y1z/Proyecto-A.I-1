@@ -1,6 +1,5 @@
 #pragma once
 #include <cmath>
-#include <valarray>
 #include <iostream>
 
 /*!
@@ -21,11 +20,10 @@ public:// functions
 	float DotProduct(CVector2D &OtherVector);
 	//! return the theoretical component Z axis 
 	float CrossProduct(CVector2D &OtherVector);
-	
 	/*! creates a new vector */
 	CVector2D Add(CVector2D &OtherVector);
 	/*! creates a new vector and can be used the tell distance*/
-	CVector2D Subtract(CVector2D &OtherVector);
+	CVector2D Subtract(const CVector2D &OtherVector) const;
 	/*! crates a new vector */
 	CVector2D ScalarMultiplation(float Scalar);
 	/*! Returns a unit vector */
@@ -47,24 +45,23 @@ public:// functions
 	void SetX(float value);
 	void SetY(float value);
 
-
-	CVector2D operator+(const CVector2D &OtherVector);
-	CVector2D	operator-(const CVector2D &OtherVector);
+	CVector2D operator+(const CVector2D &OtherVector) const;
+	CVector2D	operator-(const CVector2D &OtherVector) const;
 	// !the same as DotProduct
-	float operator*(const CVector2D &OtherVector);
+	CVector2D operator*(const CVector2D &OtherVector);
 
 	/* alters the vector */
-	CVector2D operator+= (const CVector2D &OtherVector);
+	CVector2D& operator+= (const CVector2D &OtherVector);
 	/*!Return the Current ofter operation vector */
-	CVector2D operator-= (const CVector2D &OtherVector);
+	CVector2D& operator-= (const CVector2D &OtherVector);
 	/*!alters this vector and returns the result of multiplication */
-	CVector2D operator*= (const CVector2D &OtherVector);
+	CVector2D& operator*= (const CVector2D &OtherVector);
 	/*! multiples the current vector by a scalar*/
-	CVector2D operator*= (float Scalar);
+	CVector2D& operator*= (float Scalar);
 	//!return a new vector 
 	CVector2D operator*(const float &Scalar);
 
-	void operator=(const CVector2D &OtherVector);
+	CVector2D& operator=(const CVector2D &OtherVector);
 
 	bool operator==(const CVector2D &OtherVector);
 

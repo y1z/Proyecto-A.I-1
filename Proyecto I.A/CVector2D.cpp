@@ -2,22 +2,18 @@
 
 CVector2D::CVector2D()
 	:X(0), Y(0)
-{
-}
+{}
 
 CVector2D::CVector2D(float x, float y)
 	: X(x), Y(y)
-{
-}
+{}
 
 CVector2D::~CVector2D()
-{
-}
+{}
 
 float CVector2D::DotProduct(CVector2D & OtherVector)
 {
 	float Result = (this->X * OtherVector.X) + (this->Y * OtherVector.Y);
-
 	return Result;
 }
 
@@ -32,19 +28,25 @@ CVector2D CVector2D::Add(CVector2D & OtherVector)
 	return CVector2D(this->X + OtherVector.X, this->Y + OtherVector.Y);
 }
 
-CVector2D CVector2D::Subtract(CVector2D & OtherVector)
+CVector2D CVector2D::Subtract(const CVector2D & OtherVector) const
 {
 	return CVector2D(this->X - OtherVector.X, this->Y - OtherVector.Y);
 }
 
-CVector2D CVector2D::Normalize()
+CVector2D CVector2D::Normalize() 
 {
 	//get current magnitude
 	float magnitude = this->Magnitude();
 	CVector2D UnitVector;
+	if (this->X > 0 || this->X < 0)
+	{
+		UnitVector.SetX(this->X / magnitude);
+	}
 
-	UnitVector.SetX( this->X / magnitude);
-	UnitVector.SetY( this->Y / magnitude);
+	if (this->Y > 0 || this->Y < 0)
+	{
+		UnitVector.SetY(this->Y / magnitude);
+	}
 
 	return UnitVector;
 }
@@ -102,36 +104,35 @@ float CVector2D::AngleBetweenTwoVectors(CVector2D & OtherVector)
 	float ThisVectorsMagnitude = this->Magnitude();
 	float OtherVectorMagnitude = OtherVector.Magnitude();
 
-	return acos(Product/(ThisVectorsMagnitude * OtherVectorMagnitude));
+	return acos(Product / (ThisVectorsMagnitude * OtherVectorMagnitude));
 }
 
-
-
-CVector2D CVector2D::operator+(const CVector2D & OtherVector)
+CVector2D CVector2D::operator+(const CVector2D & OtherVector) const
 {
 	return CVector2D(this->X + OtherVector.X, this->Y + OtherVector.Y);;
 }
 
-CVector2D CVector2D::operator-(const CVector2D & OtherVector)
+CVector2D CVector2D::operator-(const CVector2D & OtherVector) const
 {
 	return CVector2D(this->X - OtherVector.X, this->Y - OtherVector.Y);
 }
 
-float CVector2D::operator*(const CVector2D & OtherVector)
+CVector2D CVector2D::operator*(const CVector2D & OtherVector)
 {
-	float Result = (this->X * OtherVector.X) + (this->Y * OtherVector.Y);
+	CVector2D Result (this->X * OtherVector.X, this->Y * OtherVector.Y);
 	return Result;
 }
 
 CVector2D CVector2D::operator*(const float & Scalar)
 {
-	return CVector2D((this->X * Scalar) ,(this->Y * Scalar));
+	return CVector2D((this->X * Scalar), (this->Y * Scalar));
 }
 
-void CVector2D::operator=(const CVector2D & OtherVector)
+CVector2D& CVector2D::operator=(const CVector2D & OtherVector)
 {
 	this->X = OtherVector.X;
 	this->Y = OtherVector.Y;
+	return *this;
 }
 
 bool CVector2D::operator==(const CVector2D & OtherVector)
@@ -144,24 +145,23 @@ bool CVector2D::operator==(const CVector2D & OtherVector)
 	return true;
 }
 
-
-CVector2D CVector2D::operator+=(const CVector2D & OtherVector)
+CVector2D& CVector2D::operator+=(const CVector2D & OtherVector)
 {
-	this->X = this->X+ OtherVector.X;
-	this->Y = this->Y+ OtherVector.Y;
+	this->X = this->X + OtherVector.X;
+	this->Y = this->Y + OtherVector.Y;
 
 	return *this;
 }
 
-CVector2D CVector2D::operator-=(const CVector2D & OtherVector)
+CVector2D& CVector2D::operator-=(const CVector2D & OtherVector)
 {
 	this->X = this->X - OtherVector.X;
 	this->Y = this->Y - OtherVector.Y;
-	
+
 	return *this;
 }
 
-CVector2D CVector2D::operator*=(const CVector2D & OtherVector)
+CVector2D& CVector2D::operator*=(const CVector2D & OtherVector)
 {
 	this->X = this->X * OtherVector.X;
 	this->Y = this->Y * OtherVector.Y;
@@ -169,7 +169,7 @@ CVector2D CVector2D::operator*=(const CVector2D & OtherVector)
 	return *this;
 }
 
-CVector2D CVector2D::operator*=(float Scalar)
+CVector2D& CVector2D::operator*=(float Scalar)
 {
 	this->X = this->X * Scalar;
 	this->Y = this->Y * Scalar;

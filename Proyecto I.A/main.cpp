@@ -1,127 +1,30 @@
 #include <iostream>
+#include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include "CVector2D.h"
 #include "Boid.h"
 #include "HelperFunctions.h"
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-/*! this function is just to test the seek behavior*/
-void BoidsSeekDemo(Boid &Seeker, Boid &Target);
-/*! this function is just to test the flee behavior*/
-void BoidsFleeDemo(Boid &FleeBoid, Boid &Target, float RangeOfDanger);
-void BoidsWonderDemo(Boid &WonderBoid);
-bool Start();
+#include "SandBox.h"
+#include "BoidManager.h"
+#include "BoidDemos.h"
+
+void BoidsRacing(BoidManager &RaceTrack);
+
+void Start();
 
 int main()
 {
 	Start();
-	// just for debugging
-	DumbStop();
 }
 
-void BoidsSeekDemo(Boid & Seeker, Boid &TargetBoid)
-{
-	sf::RenderWindow Window(sf::VideoMode(600, 600), "Boid Seeker visualizer", sf::Style::Default);
-	while (true)
-	{
-		CVector2D TragetVector = Boid::Seek(&Seeker.GetPosition(), &Seeker.GetDirection(), &TargetBoid.GetPosition());
-
-		/*To control the speed of movement*/
-		CVector2D ChangeInForce = TragetVector * Seeker.m_speed;
-
-		Seeker.m_direction += ChangeInForce;
-
-		Seeker.m_position += Seeker.m_direction;
-		/*To change the current positions on screen*/
-		TargetBoid.Upadate(Window);
-		Seeker.Upadate(Window);
-
-		Window.display();
-		Window.clear();
-		std::cout << "Current Position " << Seeker.m_position << "\n";
-	}
-
-}
-
-void BoidsFleeDemo(Boid & Seeker, Boid &DangerBoid, float DangerRange)
-{
-	sf::RenderWindow Window(sf::VideoMode(600, 600), "Boid Flee Demo", sf::Style::Default);
-
-	if (Seeker.GetPosition() == DangerBoid.GetPosition())
-	{
-		// Stop error when calculating ditance	
-		Seeker.m_position += CVector2D(2, 2);
-	}
-
-	while (true)
-	{
-		CVector2D RunAwayVector = Boid::flee(&Seeker.GetPosition(), &Seeker.GetDirection(), DangerRange);
-
-		CVector2D ChangeInForce(0, 0);
-
-		if (DangerBoid.Distance(Seeker) < (RunAwayVector.SquaredMagnitude()))
-		{
-			std::cout << "WHAT'S UP DANGER \n";
-
-			ChangeInForce += ((RunAwayVector - Seeker.m_position).Normalize() *  +DangerRange);
-		}
-
-		ChangeInForce += (DangerBoid.m_position - Seeker.m_position).Normalize();
-
-		Seeker.m_direction += ChangeInForce;
-		Seeker.m_position += Seeker.m_direction;
-
-		Seeker.Upadate(Window);
-		DangerBoid.Upadate(Window);
-
-
-		std::cout << "Current Position " << Seeker.m_position << "\n";
-
-		Window.display();
-		Window.clear();
-		DumbStop();
-	}
-}
-
-void BoidsWonderDemo(Boid & WonderBoid)
-{
-	sf::RenderWindow Window(sf::VideoMode(1280, 1280), "Boid Wonder demo", sf::Style::Default);
-
-	CVector2D WonderVector = Boid::wonder(700, 700);
-
-	srand(time(0));
-
-	std::cout << "First Wonder Vector " << WonderVector << '\n';
-	while (true)
-	{
-		CVector2D ChangeInForce = Boid::Seek(&WonderBoid.m_position, &WonderBoid.m_direction, &WonderVector);
-		
-		WonderBoid.m_direction += (ChangeInForce * WonderBoid.m_speed);
-		WonderBoid.m_position += WonderBoid.m_direction;
-
-		WonderBoid.Upadate(Window);
-
-		if(WonderBoid.Distance(WonderVector) < 55000.0f)
-		{
-			WonderVector = Boid::wonder(600, 400);
-			WonderVector += (WonderBoid.m_direction * -1);
-			std::cout << "new Wonder Position : "<< WonderVector<<"\n";
-		}
-
-		std::cout << WonderBoid.m_position<<'\n';
-		
-		Window.display();
-		Window.clear();
-	}
-
-}
 /*! Begins the program */
-bool Start()
+void Start()
 {
 	Boid Seeker;
-	Seeker.Init(CVector2D(200, 200), CVector2D(-20, -5), 1);
+	Seeker.Init(CVector2D(0, 0), CVector2D(-20, -5), 1);
 
 	Boid Traget;
-	Traget.Init(CVector2D(200, 200), CVector2D(0, 0), 1);
+	Traget.Init(CVector2D(1000, 110), CVector2D(0, 0), 1);
 
 	sf::Texture TexSeeker;
 	sf::Texture TexTraget;
@@ -132,9 +35,59 @@ bool Start()
 	Seeker.SetSprite(TexSeeker);
 	Traget.SetSprite(TexTraget);
 
-	//BoidsFleeDemo(Seeker, Traget, 20.0f);
-	//BoidsSeekDemo(Seeker, Traget);
-	BoidsWonderDemo(Seeker);
+	Seeker.SetVelocity(-200.0f, 200.0f);
 
-	return false;
+	BoidManager BoidManager;
+	BoidManager.AddBoid(Seeker, Behavior::Seek);
+	BoidManager.AddBoid(Traget, Behavior::Seek);
+
+	Seeker.SetSpeed(200.f);
+	BoidsRacing(BoidManager);
+	//BoidsArriveDemo(Seeker, Traget, 5);
+	//BoidsFleeDemo(Seeker, Traget, 75);
+	//BoidsSeekDemo(Seeker, Traget);
+	//BoidsWonderRadiusDemo(Seeker);
+	//BoidsWonderTimeDemo(Seeker);
 }
+
+
+void BoidsRacing(BoidManager & BoidsGroup)
+{
+	//Tracks the mouse Position 
+	CVector2D CurrentMousePosition;
+	CurrentMousePosition.SetX(1500.f);
+	CurrentMousePosition.SetY(0.0f);
+
+	sf::Time passedTime(sf::seconds(0.01f));
+	sf::Clock clock;
+	sf::RenderWindow Window(sf::VideoMode(3000, 1200), "Boid Seeker Demo", sf::Style::Default);
+	sf::Event MY_Event;
+
+	BoidsGroup.SetRenderTargetWindow(Window);
+
+	bool IsWindowRunnig = true;
+	while (IsWindowRunnig)
+	{
+		// give every boid it's behavior
+		for (int i = 0; i < BoidsGroup.GetBoidsVector().size(); ++i)
+		{
+			if (BoidsGroup.GetBoidsVector()[i].behavoir == Behavior::Seek)
+			{
+				CVector2D TargetVector = Boid::Seek(BoidsGroup.GetBoid(i), CurrentMousePosition);
+				BoidsGroup.GetBoid(i).m_Velocity = (BoidsGroup.GetBoid(i).m_Velocity + TargetVector).Normalize() * 100.f;
+				BoidsGroup.GetBoid(i).m_position += (BoidsGroup.GetBoid(i).m_Velocity) * passedTime.asSeconds();
+			}
+
+		}
+
+		WindowEvents(Window, IsWindowRunnig, CurrentMousePosition);
+
+		passedTime = clock.restart();
+
+		BoidsGroup.Clear();
+		BoidsGroup.Update();
+		BoidsGroup.Display();
+	}
+
+}
+
