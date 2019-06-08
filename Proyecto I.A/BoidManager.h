@@ -27,6 +27,8 @@ public:// constructor
 public: // functions 
 	//! inserts boid to the Sand-box 
 	void AddBoid(Boid &newBoid,Behavior behavoir);
+	//! make and adds them 
+	void CreateAndAddBoid(Behavior behavoir, float speed = 1.0f, float mas = 0.7f, float PosX = 100.0f, float PosY = 100.0f);
 
 	void SetRenderTargetWindow(sf::RenderWindow &Window);
 	//! updates every single boid and prepares them to be drawn.
@@ -44,7 +46,8 @@ public: // functions
 
 private:// variables
 	sf::RenderWindow *mptr_Window = nullptr;
-
+	sf::Texture m_GenericBoidTex;
+	sf::Sprite m_GenericBoidSprite;
 	std::vector<BoidAndBehavoir> m_Boids;
 	std::vector<bool> m_ColidingBoids;
 };

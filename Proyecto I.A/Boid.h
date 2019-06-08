@@ -14,7 +14,7 @@ public:// constructor
 	Boid();
 	~Boid();
 public:// functions
-	bool Init(const CVector2D &Position, const CVector2D &Direction, float speed);
+	bool Init(const CVector2D &Position, const CVector2D &Direction, float speed, float mas);
 	void Destroy();
 	void Upadate(sf::RenderWindow &Windows);
 	void Render(sf::RenderWindow &Windows);
@@ -24,7 +24,7 @@ public:// functions
 	void SetVelocity(float x, float y);
 	void SetSpeed(float speed);
 	void SetSprite(sf::Texture & TextureForSprite, float ScaleX = 1.0f, float ScaleY = 1.0f);
-
+	void SetSprite(sf::Sprite &refSprite);
 	/*! this function uses squared magnitude to determine distance*/
 	float Distance(Boid &OtherBoid);
 	/*! this function uses squared magnitude to determine distance*/

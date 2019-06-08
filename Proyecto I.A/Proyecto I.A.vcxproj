@@ -153,7 +153,6 @@ xcopy /y /d "$(DEVLIBS)SFML\bin\sfml-graphics-2.dll" "$(SolutionDir)x64\Release"
     <ClInclude Include="CVector2D.h" />
     <ClInclude Include="HelperFunctions.h" />
     <ClInclude Include="BoidManager.h" />
-    <ClInclude Include="SandBox.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>

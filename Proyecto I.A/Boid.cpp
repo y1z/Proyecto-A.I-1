@@ -18,11 +18,12 @@ Boid::Boid()
 Boid::~Boid()
 {}
 
-bool Boid::Init(const CVector2D & Position, const CVector2D & Direction, float speed)
+bool Boid::Init(const CVector2D & Position, const CVector2D & Direction, float speed, float Mas)
 {
 	m_position = Position;
 	m_direction = Direction;
 	m_speed = speed;
+	m_Mas = Mas;
 
 	return true;
 }
@@ -68,6 +69,11 @@ void Boid::SetSprite(sf::Texture & TextureForSprite, float ScaleX, float ScaleY)
 {
 	m_sprite.setTexture(TextureForSprite);
 	m_sprite.setScale(ScaleX, ScaleY);
+}
+
+void Boid::SetSprite(sf::Sprite & refSprite)
+{
+	m_sprite = refSprite;
 }
 
 float Boid::Distance(Boid & OtherBoid)
@@ -118,32 +124,31 @@ CVector2D Boid::Seek(const Boid &Seeker, const CVector2D& EndPoint)
 
 CVector2D Boid::flee(const Boid &Fleer, const CVector2D& DangerCenter, float Radius)
 {
-	//	CVector2D FleeVector = Seek(Fleer, DangerCenter) * -1;
-		//! to check if the boid is in range of Radius 
-	CVector2D RadiusVector(DangerCenter + CVector2D(0, Radius));
-
-	if ((Fleer.GetPosition() - RadiusVector).SquaredMagnitude() > Radius * Radius)
+	// checks distance between the fleer and the "DangerCenter"
+	if ((Fleer.GetPosition() - DangerCenter).SquaredMagnitude() < Radius * Radius)
 	{
-
+		return Seek(Fleer, DangerCenter) * -1.0f;
 	}
 
 	// basically don't move  
-	return Fleer.GetPosition();
+	return CVector2D(0.f, 0.f);
 }
 
-CVector2D Boid::wander(const Boid &Seeker, float WonderAngle)
+CVector2D Boid::wander(const Boid &Seeker, float WanderAngle)
 {
-	CVector2D CirclePosition = Seeker.GetPosition() + (Seeker.GetVelocity()).Normalize() * 10.0f;
+	CVector2D CirclePosition = (Seeker.GetPosition() + Seeker.GetVelocity()).Normalize() * 10.0f;
 
-	static std::default_random_engine RandEngine;
+	std::random_device rd;
+	static std::mt19937 RandGenrator(rd());
+	std::uniform_real_distribution<float> Range(-WanderAngle, WanderAngle);
 
-	float AngleX = std::cos(CirclePosition.GetX());
-	float AngleY = std::sin(CirclePosition.GetY());
-	AngleX += RandEngine() % static_cast<int>(WonderAngle);
-	AngleY -= RandEngine() % static_cast<int>(WonderAngle);
-	CVector2D WanderForce = CirclePosition + (CVector2D(AngleX, AngleY));
+	float AngleX = Range(RandGenrator);
+	float AngleY = Range(RandGenrator);
 
-	return 	WanderForce.Normalize() * 10;
+	AngleX += std::cos(Range(RandGenrator));
+	AngleY += std::sin(Range(RandGenrator));
+
+	return 	 CVector2D(AngleX, AngleY).Normalize() * 10.5f;
 }
 
 CVector2D Boid::Arrive(const Boid & Seeker, const Boid & Target)
@@ -152,4 +157,3 @@ CVector2D Boid::Arrive(const Boid & Seeker, const Boid & Target)
 
 	return TargetVector;
 }
-
