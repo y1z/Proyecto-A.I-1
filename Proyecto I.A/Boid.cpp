@@ -76,16 +76,16 @@ void Boid::SetSprite(sf::Sprite & refSprite)
 	m_sprite = refSprite;
 }
 
-float Boid::Distance(Boid & OtherBoid)
+float Boid::Distance(Boid & OtherBoid) const
 {
 	CVector2D DistanceVector = (OtherBoid.m_position - m_position);
 
 	return DistanceVector.SquaredMagnitude();
 }
 
-float Boid::Distance(CVector2D & OtherVector)
+float Boid::Distance(const CVector2D & OtherVector) const
 {
-	return (OtherVector - this->m_position).SquaredMagnitude();
+	return (OtherVector - m_position).SquaredMagnitude();
 }
 
 CVector2D Boid::GetPosition() const
@@ -151,9 +151,22 @@ CVector2D Boid::wander(const Boid &Seeker, float WanderAngle)
 	return 	 CVector2D(AngleX, AngleY).Normalize() * 10.5f;
 }
 
-CVector2D Boid::Arrive(const Boid & Seeker, const Boid & Target)
+CVector2D Boid::Arrive(const Boid & Arriver, const CVector2D & ArrivePosition, float Radius)
 {
-	CVector2D TargetVector = (Target.m_position - Seeker.m_position);
+	CVector2D TargetVector = (ArrivePosition - Arriver.m_position).Normalize();
+	CVector2D RaidusVector = ArrivePosition + CVector2D(0.0f, Radius);
+
+	float SqureMagRadius = (RaidusVector - ArrivePosition).SquaredMagnitude();
+	float SeekerDistance = Arriver.Distance(ArrivePosition);
+
+	if (SeekerDistance < SqureMagRadius)
+	{
+		/* Values range from 0 ... 1*/
+		float ProporcionalDistance = (SeekerDistance / SqureMagRadius) * 100.0f * 0.01f;
+		std::cout << "Proporcional Diatace " << ProporcionalDistance << '\n';
+
+		(ProporcionalDistance < 0.01f) ? TargetVector * 0 : TargetVector = TargetVector * ProporcionalDistance;
+	}
 
 	return TargetVector;
 }

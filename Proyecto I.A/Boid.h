@@ -26,9 +26,9 @@ public:// functions
 	void SetSprite(sf::Texture & TextureForSprite, float ScaleX = 1.0f, float ScaleY = 1.0f);
 	void SetSprite(sf::Sprite &refSprite);
 	/*! this function uses squared magnitude to determine distance*/
-	float Distance(Boid &OtherBoid);
+	float Distance(Boid &OtherBoid) const ;
 	/*! this function uses squared magnitude to determine distance*/
-	float Distance(CVector2D &OtherVector);
+	float Distance(const CVector2D &OtherVector) const ;
 
 	CVector2D GetPosition() const;
 	CVector2D GetDirection();
@@ -43,7 +43,7 @@ public:// functions
 	/*! Expect's a angle in degrees*/
 	static CVector2D wander(const Boid &Seeker, float WonderAngle);
 	/*! Give a vector that will decrement every time the seeker get closer */
-	static CVector2D Arrive(const Boid &Seeker, const Boid &Target);
+	static CVector2D Arrive(const Boid &Seeker, const CVector2D & Target, float Radius);
 
 public:// variables 
 	CVector2D m_position;

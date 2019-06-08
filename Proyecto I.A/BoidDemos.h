@@ -218,7 +218,7 @@ void BoidsArriveDemo(Boid &Seeker, Boid &Traget, float Radius)
 
 	while (isWindowRuning)
 	{
-		CVector2D TragetVector = Boid::Arrive(Seeker, Traget);
+		CVector2D TragetVector = Boid::Arrive(Seeker, Traget.GetPosition(),100);
 
 		Seeker.m_Velocity = TragetVector.Normalize() * Seeker.m_speed;
 

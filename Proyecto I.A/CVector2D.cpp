@@ -33,7 +33,7 @@ CVector2D CVector2D::Subtract(const CVector2D & OtherVector) const
 	return CVector2D(this->X - OtherVector.X, this->Y - OtherVector.Y);
 }
 
-CVector2D CVector2D::Normalize() 
+CVector2D CVector2D::Normalize()
 {
 	//get current magnitude
 	float magnitude = this->Magnitude();
@@ -42,10 +42,18 @@ CVector2D CVector2D::Normalize()
 	{
 		UnitVector.SetX(this->X / magnitude);
 	}
+	else
+	{
+		UnitVector.SetX(0.01f);
+	}
 
 	if (this->Y > 0 || this->Y < 0)
 	{
 		UnitVector.SetY(this->Y / magnitude);
+	}
+	else
+	{
+		UnitVector.SetY(0.01f);
 	}
 
 	return UnitVector;
@@ -119,7 +127,7 @@ CVector2D CVector2D::operator-(const CVector2D & OtherVector) const
 
 CVector2D CVector2D::operator*(const CVector2D & OtherVector)
 {
-	CVector2D Result (this->X * OtherVector.X, this->Y * OtherVector.Y);
+	CVector2D Result(this->X * OtherVector.X, this->Y * OtherVector.Y);
 	return Result;
 }
 

@@ -11,6 +11,7 @@ enum Behavior
 	Seek,
 	Flee,
 	Wander,
+	Arrive
 };
 
 struct BoidAndBehavoir

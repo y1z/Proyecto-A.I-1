@@ -43,6 +43,7 @@ void Start()
 	BoidManager.AddBoid(Traget, Behavior::Seek);
 	BoidManager.CreateAndAddBoid(Behavior::Flee);
 	BoidManager.CreateAndAddBoid(Behavior::Wander, 60);
+	BoidManager.CreateAndAddBoid(Behavior::Arrive, 60);
 
 	BoidsRacing(BoidManager);
 	//BoidsArriveDemo(Seeker, Traget, 5);
@@ -78,6 +79,7 @@ void BoidsRacing(BoidManager & BoidsGroup)
 				CVector2D TargetVector = Boid::Seek(BoidsGroup.GetBoid(i), CurrentMousePosition);
 				BoidsGroup.GetBoid(i).m_Velocity = (BoidsGroup.GetBoid(i).m_Velocity + TargetVector).Normalize() * 100.f;
 				BoidsGroup.GetBoid(i).m_position += (BoidsGroup.GetBoid(i).m_Velocity) * passedTime.asSeconds();
+				std::cout << BoidsGroup.GetBoid(i).m_Velocity << '\n';
 			}
 			else if (BoidsGroup.GetBoidsVector()[i].behavoir == Behavior::Flee)
 			{
@@ -91,7 +93,12 @@ void BoidsRacing(BoidManager & BoidsGroup)
 				CVector2D TragetVector = Boid::Seek(BoidsGroup.GetBoid(i), CurrentMousePosition);
 				BoidsGroup.GetBoid(i).m_Velocity = (BoidsGroup.GetBoid(i).m_Velocity + TragetVector + WanderVector).Normalize() * BoidsGroup.GetBoid(i).GetSpeed();
 				BoidsGroup.GetBoid(i).m_position += (BoidsGroup.GetBoid(i).m_Velocity) * passedTime.asSeconds();
-				std::cout << "Wander Velocity = | " << BoidsGroup.GetBoid(i).m_Velocity << '\n';
+			}
+			else if (BoidsGroup.GetBoidsVector()[i].behavoir == Behavior::Arrive)
+			{
+				CVector2D ArriveVector = Boid::Arrive(BoidsGroup.GetBoid(i), CurrentMousePosition, 1000);
+				BoidsGroup.GetBoid(i).m_Velocity = ( ArriveVector).Normalize() * BoidsGroup.GetBoid(i).GetSpeed();
+				BoidsGroup.GetBoid(i).m_position += (BoidsGroup.GetBoid(i).m_Velocity) * passedTime.asSeconds();
 			}
 
 		}
