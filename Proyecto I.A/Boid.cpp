@@ -117,7 +117,7 @@ float Boid::GetSpeed() const
 CVector2D Boid::Seek(const Boid &Seeker, const CVector2D& EndPoint)
 {
 	CVector2D TragetVector = (EndPoint - Seeker.GetPosition());
-	CVector2D SteeringVector = (TragetVector - Seeker.m_Velocity).Normalize() * Seeker.m_Mas;
+	CVector2D SteeringVector = (TragetVector - Seeker.m_Velocity) * Seeker.m_Mas;
 
 	return SteeringVector;
 }
@@ -163,7 +163,6 @@ CVector2D Boid::Arrive(const Boid & Arriver, const CVector2D & ArrivePosition, f
 	{
 		/* Values range from 0 ... 1*/
 		float ProporcionalDistance = (SeekerDistance / SqureMagRadius) * 100.0f * 0.01f;
-		std::cout << "Proporcional Diatace " << ProporcionalDistance << '\n';
 
 		(ProporcionalDistance < 0.01f) ? TargetVector * 0 : TargetVector = TargetVector * ProporcionalDistance;
 	}
